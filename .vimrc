@@ -39,7 +39,7 @@ set display=lastline
 set gcr=a:block-blinkon0
 
 "<ESC> == jj
-inoremap jj
+inoremap jj <ESC>
 
 set nocp
 set ru
