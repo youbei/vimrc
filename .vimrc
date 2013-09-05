@@ -71,7 +71,6 @@ set lbr
 set hls
 
 set backspace=indent,eol,start
-set whichwrap=b,s,<,>,[,]
 "create a fold for the lines in {range} ?
 set fo+=mB
 set mousemodel=popup
