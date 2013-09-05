@@ -21,4 +21,6 @@
 * `[C-_]`: close matching open tag
 * `[C-y]`,: Expand Abbreviation
 
+* `[cs"']`,: "test" -> 'test'
+* `[ds"]`,: "test" -> test
 
