@@ -38,6 +38,9 @@ set display=lastline
 "stop blink
 set gcr=a:block-blinkon0
 
+"<ESC> == jj
+inoremap jj
+
 set nocp
 set ru
 set cin
