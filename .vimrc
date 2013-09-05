@@ -22,9 +22,6 @@
 "<C-_>: close matching open tag
 "<C-y>,: Expand Abbreviation
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-"Open NERDTree when opening
-autocmd VimEnter * NERDTree
-autocmd VimEnter * wincmd p
 "Language settings
 let &termencoding=&encoding
 set fileencodings=utf-8,ucs-bom,cp936,latin1
@@ -213,7 +210,10 @@ autocmd InsertLeave * if pumvisible() == 0|pclose|endif
 "For GVIM
 
 if (has("gui_running"))
-    "Toggle Menu and Toolbar
+    "Open NERDTree when opening
+    autocmd VimEnter * NERDTree
+    autocmd VimEnter * wincmd p
+    "Remove Menu and Toolbar
     set guioptions-=T "remove toolbar
     set guioptions-=m "remove menubar
 
@@ -225,6 +225,7 @@ if (has("gui_running"))
             \set guioptions+=m <Bar>
         \endif<CR>
 
+    "Remove scroll bar
     set guioptions+=RrLlb
     set guioptions-=RrLlb
 	set guifont=sourcecodepro\ 13
