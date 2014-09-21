@@ -35,6 +35,7 @@ endif
 
 set display=lastline
 
+
 "stop blink
 set gcr=a:block-blinkon0
 
@@ -42,11 +43,13 @@ set gcr=a:block-blinkon0
 inoremap jj <ESC>
 set nocp
 set ru
-set cin
 "subtitute with magic
 set sm
-"auto indent
-set ai
+"no auto indent
+set nocindent
+set nosmartindent
+set noautoindent
+filetype indent on
 "paste
 set pastetoggle=<F9>
 
@@ -118,17 +121,22 @@ nmap wk <C-w>k
 nmap wl <C-w>l
 
 
+"Hightlight .ejs files
+au BufNewFile,BufRead *.ejs set filetype=html
 
 "Plugins settings
 
 "NERDTree
-nnoremap <silent> <F3> :NERDTreeToggle<CR>
+nnoremap <silent> <F3> :NERDTreeTabsToggle<CR>
 
 "Grep
 nnoremap <silent> <F2> :Grep<CR>
 
 "ConqueTerm
 nnoremap <silent> <F6> :ConqueTermVSplit bash <CR>
+
+"Pathogen
+call pathogen#infect()
 
 "Tagbar
 let g:tagbar_autofocus = 1
@@ -154,21 +162,14 @@ autocmd FileType python map <F5> <ESC>:!python %:p<CR>
 autocmd FileType go map <F5> <ESC>:!go install
 autocmd FileType javascript map <F5> <ESC>:!js %:p<CR>
 autocmd FileType html map <F5> <ESC>:!firefox %:p<CR>
-"autocmd FileType html map <F5> <ESC>:w<CR>
-"autocmd FileType css map <F5> <ESC>:w<CR>
+autocmd FileType html map <F5> <ESC>:w<CR>
+autocmd FileType css map <F5> <ESC>:w<CR>
 autocmd FileType c map <F5> <ESC>:make<CR>
 autocmd FileType cpp map <F5> <ESC>:make<CR>
 autocmd FileType coffee map <F5> <ESC>:CoffeeMake<CR>
 autocmd FileType less map <F5> <ESC>:!lessc %:p > %<.css <CR>
 autocmd FileType coffee map <F6> <ESC>:CoffeeCompile vertical<CR>
 
-autocmd FileType tex map <F2>   <ESC>:w<CR>\ll   
-autocmd FileType tex imap <F2>   <ESC>:w<CR>\ll
-autocmd FileType tex map <F3>   <ESC>\lv                  
-autocmd FileType tex imap <F3>   <ESC>\lv
-autocmd FileType tex nmap <Tab>  <C-j>                    
-autocmd FileType tex imap <Tab>  <C-j>
-autocmd FileType tex vmap <Tab>  <C-j>
 
 
 "Quick Fix
@@ -198,21 +199,18 @@ noremap <S-l> <ESC>:tabnext<CR>
 noremap <S-h> <ESC>:tabp<CR>
 
 "omno complete
-autocmd FileType python set omnifunc=pythoncomplete#Complete
+"autocmd FileType python set omnifunc=pythoncomplete#Complete
 autocmd FileType javascript set omnifunc=javascriptcomplete#CompleteJS
 autocmd FileType html set omnifunc=htmlcomplete#CompleteTags
-autocmd FileType css set omnifunc=csscomplete#CompleteCSS
+"autocmd FileType css set omnifunc=csscomplete#CompleteCSS
 autocmd FileType xml set omnifunc=xmlcomplete#CompleteTags
-autocmd FileType c set omnifunc=ccomplete#Complete
+"autocmd FileType c set omnifunc=ccomplete#Complete
 set completeopt+=longest
 autocmd InsertLeave * if pumvisible() == 0|pclose|endif
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "For GVIM
-
 if (has("gui_running"))
-    "Open NERDTree when opening
-    autocmd VimEnter * NERDTree
     autocmd VimEnter * wincmd p
     "Remove Menu and Toolbar
     set guioptions-=T "remove toolbar
@@ -229,11 +227,13 @@ if (has("gui_running"))
     "Remove scroll bar
     set guioptions+=RrLlb
     set guioptions-=RrLlb
-	set guifont=sourcecodepro\ 13
+	set guifont=Monaco:h14
     set lazyredraw
-    colo desert
+    syntax enable
+    set background=dark
+    colorscheme solarized
 else
-    colo default
+    colorscheme default
 endif
 
 if has("autocmd")
@@ -245,6 +245,7 @@ endif
 "Making Parenthesis And Brackets Handling Easier
 inoremap ( ()<Esc>i
 inoremap [ []<Esc>i
+inoremap < <><Esc>i
 inoremap { {<CR>}<Esc>O
 autocmd Syntax html,vim inoremap < <lt>><Esc>i| inoremap > <c-r>=ClosePair('>')<CR>
 inoremap ) <c-r>=ClosePair(')')<CR>
@@ -283,30 +284,3 @@ function QuoteDelim(char)
  return a:char.a:char."\<Esc>i"
  endif
 endf
-
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
-"latex-pdf REQUIRED. This makes vim invoke Latex-Suite when you open a tex file.
-filetype plugin on
-
-" IMPORTANT: win32 users will need to have 'shellslash' set so that latex
-" can be called correctly.
-set shellslash
-
-" IMPORTANT: grep will sometimes skip displaying the file name if you
-" search in a singe file. This will confuse Latex-Suite. Set your grep
-" program to always generate a file-name.
-set grepprg=grep\ -nH\ $*
-
-" OPTIONAL: This enables automatic indentation as you type.
-filetype indent on
-
-" OPTIONAL: Starting with Vim 7, the filetype of empty .tex files defaults to
-" 'plaintex' instead of 'tex', which results in vim-latex not being loaded.
-" The following changes the default filetype back to 'tex':
-let g:tex_flavor='latex'
-
-"let g:Tex_DefaultTargetFormat='pdf'
-
-let g:Tex_ViewRule_pdf='evince'
-
