@@ -254,6 +254,8 @@ inoremap } <c-r>=CloseBracket()<CR>
 inoremap " <c-r>=QuoteDelim('"')<CR>
 inoremap ' <c-r>=QuoteDelim("'")<CR>
 
+nnoremap qw ciw""<Esc>P
+
 function ClosePair(char)
  if getline('.')[col('.') - 1] == a:char
  return "\<Right>"
