@@ -2,15 +2,7 @@
 ".vimrc by Youbei:
 
 "<F2>: grep.vim
-"<C-F2>: Toggle buttoms in GVIM
 "<F3>: Toggle NERD_tree.vim
-"<F4>: Toggle muickview
-"<F5>: make
-"<F6>: shell conque_term.vim
-"<F7>: Toggle tagbar.vim
-"<F8>: Fold/Un-Fold
-"<F9>: pastetoggle
-"<F11>: Spell checking
 
 "tt/<C-t>: create new tab
 "tc: close current tab
@@ -24,8 +16,9 @@
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "Language settings
 let &termencoding=&encoding
-set fileencodings=utf-8,ucs-bom,cp936,latin1
+set fileencodings=ucs-bom,utf-8,utf-16,gbk,big5,gb18030,latin1
 set encoding=utf-8
+set backupcopy=yes
 
 "Windows compatible
 if has("win32")
@@ -54,15 +47,10 @@ filetype indent on
 set pastetoggle=<F9>
 
 "tab stop & shift width
-set shiftwidth=4
-set tabstop=4
-set softtabstop=4
+set shiftwidth=2
+set tabstop=2
+set softtabstop=2
 set expandtab
-
-"code fold
-autocmd FileType python,coffee setlocal foldmethod=indent
-set foldlevel=99
-map <F8> za
 
 "show line number
 set number
@@ -107,11 +95,6 @@ imap <C-Up> <C-o>:<C-u>move .-2<CR>
 vmap <C-Down> :move '>+1<CR>gv
 vmap <C-Up> :move '<-2<CR>gv
 
-"Toggle spell check
-"For VIM7 only
-nmap <F11> :set spell!<CR>
-imap <F11> <C-o>:set spell!<CR>
-
 "Window Movement
 nmap wn <C-w>n
 nmap wv <C-w>v
@@ -132,9 +115,6 @@ nnoremap <silent> <F3> :NERDTreeTabsToggle<CR>
 "Grep
 nnoremap <silent> <F2> :Grep<CR>
 
-"ConqueTerm
-nnoremap <silent> <F6> :ConqueTermVSplit bash <CR>
-
 "Pathogen
 call pathogen#infect()
 
@@ -146,47 +126,6 @@ let g:tagbar_compact = 1
 let g:tagbar_singleclick = 1
 nmap <silent> <F7> :TagbarToggle<CR>
 
-"Super Tab
-let g:SuperTabDefaultCompletionType = "<c-p>"
-let g:SuperTabCompletionContexts = ['s:ContextText']
-let g:SuperTabContextTextOmniPrecedence = ['&omnifunc', '&completefunc']
-let g:SuperTabContextDefaultCompletionType = "<c-x><c-o>"
-
-
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-"ctags and cscope and make
-set cscopequickfix=s-,c-,d-,i-,t-,e-
-map <leader>cs <ESC>:!cscope -Rbq<CR>
-map <leader>ct <ESC>:!ctag -R .<CR>
-autocmd FileType python map <F5> <ESC>:!python %:p<CR>
-autocmd FileType go map <F5> <ESC>:!go install
-autocmd FileType javascript map <F5> <ESC>:!js %:p<CR>
-autocmd FileType html map <F5> <ESC>:!firefox %:p<CR>
-autocmd FileType html map <F5> <ESC>:w<CR>
-autocmd FileType css map <F5> <ESC>:w<CR>
-autocmd FileType c map <F5> <ESC>:make<CR>
-autocmd FileType cpp map <F5> <ESC>:make<CR>
-autocmd FileType coffee map <F5> <ESC>:CoffeeMake<CR>
-autocmd FileType less map <F5> <ESC>:!lessc %:p > %<.css <CR>
-autocmd FileType coffee map <F6> <ESC>:CoffeeCompile vertical<CR>
-
-
-
-"Quick Fix
-function! ToggleQF()
-    if !exists("g:fx_toggle")
-        let g:fx_toggle = 0
-    endif
-    if g:fx_toggle == 0
-        let g:fx_toggle = 1
-        copen
-    else
-        let g:fx_toggle = 0
-        cclose
-    endif
-endfunc
-map <F4> <ESC>:call ToggleQF() <CR>
-
 "Status line
 set statusline=%F%m%r%h%w\ [%{&ff}]\ [%Y]\ [ASC:\%03.3b]\ [%p%%]\ [LEN=%L]
 set laststatus=2
@@ -197,16 +136,6 @@ noremap tt <ESC>:tabnew<CR>
 noremap tc <ESC>:tabclose<CR>
 noremap <S-l> <ESC>:tabnext<CR>
 noremap <S-h> <ESC>:tabp<CR>
-
-"omno complete
-"autocmd FileType python set omnifunc=pythoncomplete#Complete
-autocmd FileType javascript set omnifunc=javascriptcomplete#CompleteJS
-autocmd FileType html set omnifunc=htmlcomplete#CompleteTags
-"autocmd FileType css set omnifunc=csscomplete#CompleteCSS
-autocmd FileType xml set omnifunc=xmlcomplete#CompleteTags
-"autocmd FileType c set omnifunc=ccomplete#Complete
-set completeopt+=longest
-autocmd InsertLeave * if pumvisible() == 0|pclose|endif
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "For GVIM
@@ -230,8 +159,13 @@ if (has("gui_running"))
 	set guifont=Monaco:h14
     set lazyredraw
     syntax enable
+    au BufReadPost *.wxml set syntax=html
+    au BufReadPost *.wxss set syntax=sass
+    au BufReadPost *.json set syntax=javascript
+    let g:javascript_plugin_jsdoc = 1
+    let g:javascript_plugin_flow = 1
     set background=dark
-    colorscheme solarized
+    colorscheme hybrid
 else
     colorscheme default
 endif
@@ -286,3 +220,22 @@ function QuoteDelim(char)
  return a:char.a:char."\<Esc>i"
  endif
 endf
+
+" Asynchronous Lint Engine (ALE)
+" Limit linters used for JavaScript.
+let g:ale_linters = {
+    \'javascript': ['flow', 'eslint'],
+    \'html': []
+\}
+
+highlight clear ALEErrorSign " otherwise uses error bg color (typically red)
+highlight clear ALEWarningSign " otherwise uses error bg color (typically red)
+let g:ale_sign_error = '>>' " could use emoji
+let g:ale_sign_warning = '?' " could use emoji
+let g:ale_statusline_format = ['X %d', '? %d', '']
+" %linter% is the name of the linter that provided the message
+" %s is the error or warning message
+let g:ale_echo_msg_format = '%linter% says %s'
+" Map keys to navigate between lines with errors and warnings.
+nnoremap <leader>an :ALENextWrap<cr>
+nnoremap <leader>ap :ALEPreviousWrap<cr>
